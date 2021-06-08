@@ -1,0 +1,4 @@
+conda create -n asynchflask
+source activate asynchflask
+pip install --upgrade pip
+pip install flask
