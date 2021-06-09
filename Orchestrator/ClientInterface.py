@@ -27,7 +27,7 @@ class ProcessRequest:
             print('Processing request', img_file)
         files = {'media': open(img_file, 'rb')}
         for url in self.tasks_url_list:
-            print('URL: ', url)
+            #print('URL: ', url)
             response = requests.post(url, files=files)
             response = response.json()
             print('URL: ', url, '; Response: ', response)
@@ -39,8 +39,8 @@ class ProcessRequest:
         asyncio.set_event_loop(loop)
         #future = asyncio.ensure_future(self.process_parallely())
         #loop.run_until_complete(future)
-        #loop.run_until_complete(self.process_parallely())
-        loop.run_until_complete(self.process_parallely_async())
+        loop.run_until_complete(self.process_parallely())
+        #loop.run_until_complete(self.process_parallely_async())
 
     async def process_parallely_async(self):
         task_responses = list()
@@ -54,7 +54,7 @@ class ProcessRequest:
             print(response)
 
     async def process_parallely(self):
-        with ThreadPoolExecutor(max_workers=10) as executor:
+        with ThreadPoolExecutor(max_workers=3) as executor:
             with requests.Session() as session:
                 loop = asyncio.get_event_loop()
                 tasks = [
@@ -104,6 +104,7 @@ def classify_image():
     #requestProcessor.process_request_serially(img_file)
     requestProcessor.process_request_parallely(img_file)
     end_time = time.time()
+    print('Total processing time: ', (end_time - start_time))
     data = dict()
     data['Time'] = end_time - start_time
     response = Response(response=json.dumps(data),
